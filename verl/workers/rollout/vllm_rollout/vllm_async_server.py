@@ -34,6 +34,7 @@ from vllm.outputs import RequestOutput
 from vllm.usage.usage_lib import UsageContext
 from vllm.v1.engine.async_llm import AsyncLLM
 
+from verl.utils.device import is_npu_available
 from verl.utils.config import omega_conf_to_dataclass
 from verl.utils.device import get_resource_name, get_visible_devices_keyword
 from verl.utils.net_utils import get_free_port, is_valid_ipv6_address
@@ -637,7 +638,10 @@ class vLLMHttpServer:
                 sleep_level = 1
             else:
                 sleep_level = 2
-            await self.engine.collective_rpc("sleep", kwargs={"level": sleep_level})
+            if is_npu_available:
+                await self.engine.collective_rpc("sleep", kwargs={"level": 1})
+            else:
+                await self.engine.collective_rpc("sleep", kwargs={"level": sleep_level})
 
             # clear encoder cache: https://github.com/vllm-project/vllm/pull/33452
             # await self.engine.reset_encoder_cache()
