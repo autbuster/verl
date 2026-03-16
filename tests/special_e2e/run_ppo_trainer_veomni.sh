@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
-
 # Download model if not exists
 MODEL_ID=${MODEL_ID:-Qwen/Qwen2.5-0.5B-Instruct}
 MODEL_PATH=${MODEL_PATH:-${HOME}/models/${MODEL_ID}}
